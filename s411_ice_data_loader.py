@@ -228,14 +228,21 @@ class S411_ICE_DATA:
                     
                     iceDataSetGmlPath = localFile.replace('.zip','/data/') + comboBoxValue + '.gml'
                     print (iceDataSetGmlPath)
+                    vlayer = iface.addVectorLayer(iceDataSetGmlPath, comboBoxValue, "ogr")
                     
                     # get Style
-                    dirname = os.path.dirname(__file__)
-                    filename = os.path.join(dirname, 'SLD\\seaice_iceact.sld')
-                    print (filename)
-                    
-                    vlayer = iface.addVectorLayer(iceDataSetGmlPath, comboBoxValue, "ogr")
-                    vlayer.loadSldStyle(filename)
+                    styleDirName = os.path.dirname(__file__)
+                    styleComboBoxValue = str(self.dlg.comboBox_2.currentText())
+                    sldFileName = os.path.join(styleDirName, 'SLD\\seaice_iceact.sld')
+                    if styleComboBoxValue == "Total Concentration (ICEACT)":
+                        sldFileName = os.path.join(styleDirName, 'SLD\\seaice_iceact.sld')
+                        vlayer.setName(comboBoxValue + '_seaice_iceact')
+                    if styleComboBoxValue == "Stage of Development (ICESOD)":
+                        vlayer.setName(comboBoxValue + '_seaice_icesod')
+                        sldFileName = os.path.join(styleDirName, 'SLD\\seaice_icesod.sld')
+                        
+                    print (sldFileName)
+                    vlayer.loadSldStyle(sldFileName)
                     if not vlayer:
                       print("Layer failed to load!")
             except ftplib.all_errors as e:
